@@ -4,6 +4,8 @@ console.log("");
 
 var searchForm = $("#search-form");
 var searchInput = $("#search-input");
+var historyContainer = $("#search-history");
+
 function handleSearchFormSubmit(e) {
   // Don't continue if there is nothing in the search form
   if (!searchInput.val()) {
@@ -16,7 +18,6 @@ function handleSearchFormSubmit(e) {
   fetchForecast(search);
   searchInput.val("");
 }
-
 searchForm.on("submit", handleSearchFormSubmit);
 
 function fetchCurrentWeather(city) {
@@ -49,7 +50,6 @@ function fetchCurrentWeather(city) {
         });
     });
 }
-
 // Function to display current weather
 function displayCurrentWeather(data) {
   var city = data.name;
@@ -87,6 +87,21 @@ function fetchForecast(city) {
       console.error("Error fetching forecast data:", error);
     });
 }
+// function renderSearchHistory() {
+//   console.log(data.city.name);
+//   var city = data.name;
+// }
+// // Function to display City History.
+// var historyContainer = $("#history");
+// function searchHistory(historyContainer) {
+//   var headingCol = $("<div>");
+//   var heading = $("<h4>");
+
+//   headingCol.attr("class", "col-12");
+//   heading.text("searchHistory:");
+//   headingCol.append(heading);
+//   historyContainer.html("");
+// }
 
 function displayForecast(data) {
   console.log(data.city.name);
@@ -126,7 +141,54 @@ function renderForecastCard(forecast) {
 
   col.attr("class", "col-md");
   col.addClass("five-day-card");
-  card.attr("class", "bg-primary text-white");
+  // card.attr("class", "bg-primary text-white");
+  card.attr("class", "bg-success-subtle text-gold fw-semibold");
+  cardBody.attr("class", "card-body p-2");
+  cardTitle.attr("class", "card-title");
+  tempEl.attr("class", "card-text");
+  windEl.attr("class", "card-text");
+  humidityEl.attr("class", "card-text");
+
+  // Add content to elements
+  cardTitle.text(dayjs(forecast.dt_txt).format("D/M/YYYY"));
+  weatherIcon.attr("src", iconUrl);
+  weatherIcon.attr("alt", iconDescription);
+  tempEl.text("Temp: " + tempC + " °C");
+  windEl.text("Wind: " + windKph + " KPH");
+  humidityEl.text("Humidity: " + humidity + " %");
+
+  forecastContainer.append(col);
+  historyContainer.append(headingCol);
+}
+
+var forecastContainer = $("#forecast");
+function renderForecastCard(forecast) {
+  // variables for data from api
+  var iconUrl =
+    "https://openweathermap.org/img/w/" + forecast.weather[0].icon + ".png";
+  var iconDescription = forecast.weather[0].description;
+  var tempC = forecast.main.temp;
+  var humidity = forecast.main.humidity;
+  var windKph = forecast.wind.speed;
+
+  // Create elements for a card
+  var col = $("<div>");
+  var card = $("<div>");
+  var cardBody = $("<div>");
+  var cardTitle = $("<h5>");
+  var weatherIcon = $("<img>");
+  var tempEl = $("<p>");
+  var windEl = $("<p>");
+  var humidityEl = $("<p>");
+
+  col.append(card);
+  card.append(cardBody);
+  cardBody.append(cardTitle, weatherIcon, tempEl, windEl, humidityEl);
+
+  col.attr("class", "col-md");
+  col.addClass("five-day-card");
+  // card.attr("class", "card bg-primary h-100 text-white");
+  card.attr("class", "card bg-success-subtle h-100 text-gold fw-semibold");
   cardBody.attr("class", "card-body p-2");
   cardTitle.attr("class", "card-title");
   tempEl.attr("class", "card-text");
